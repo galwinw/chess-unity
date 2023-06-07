@@ -1,0 +1,4 @@
+repository "chess@Galsib@cloud"
+  path "/"
+    br "/main"
+    co "/main"
