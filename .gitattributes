@@ -13,6 +13,8 @@
 *.asset merge=unityyamlmerge eol=lf
 *.meta merge=unityyamlmerge eol=lf
 *.controller merge=unityyamlmerge eol=lf
+*.assets merge=unityyamlmerge eol=lf
+*.resS merge=unityyamlmerge eol=lf
 
 
 ## git-lfs ##
@@ -25,6 +27,8 @@
 *.psd filter=lfs diff=lfs merge=lfs -text
 *.ai filter=lfs diff=lfs merge=lfs -text
 *.tif filter=lfs diff=lfs merge=lfs -text
+*.assets filter=lfs diff=lfs merge=lfs -text
+*.resS filter=lfs diff=lfs merge=lfs -text
 
 #Audio
 *.mp3 filter=lfs diff=lfs merge=lfs -text
