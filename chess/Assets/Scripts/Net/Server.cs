@@ -20,7 +20,7 @@ public class Server : MonoBehaviour {
     private const float keepAliveTickRate = 20.0f;
     private float lastKeepAliveTime;
 
-    public Action connectionDropped = null;
+    public Action connectionDropped;
 
     // Methods 
     public void Init(ushort port) {
@@ -36,14 +36,14 @@ public class Server : MonoBehaviour {
             Debug.Log("Server started on port " + port.ToString());
         }
         connections = new NativeList<NetworkConnection>(2, Allocator.Persistent);
-        isActive = false;
+        isActive = true;
     }
 
     public void Shutdown() {
         if (isActive) {
-            isActive = false;
             driver.Dispose();
             connections.Dispose();
+            isActive = false;
         }
     }
 
@@ -119,8 +119,9 @@ public class Server : MonoBehaviour {
     }
 
     public void Broadcast(NetMessage msg) {
+        Debug.Log("got to server broadcasting");
         for (int i = 0; i < connections.Length; i++) {
-            if (!connections[i].IsCreated) {
+            if (connections[i].IsCreated) {
                 Debug.Log($"Sendingg {msg.Code} to {connections[i].InternalId}");
                 SendToClient(connections[i], msg);
             }

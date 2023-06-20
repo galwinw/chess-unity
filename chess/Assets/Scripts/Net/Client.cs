@@ -18,14 +18,14 @@ public class Client : MonoBehaviour
 
     private bool isActive = false;
     
-    public Action connectionDropped = null;
+    public Action connectionDropped;
 
     public void Init(String ip, ushort port) {
         driver = NetworkDriver.Create();
         NetworkEndPoint endpoint = NetworkEndPoint.Parse(ip, port);
 
-        Debug.Log("Attempting to connect to Server on " + endpoint.Address);
         connection = driver.Connect(endpoint);
+        Debug.Log("Attempting to connect to Server on " + endpoint.Address);
         isActive = true;
 
         RegisterToEvent();
@@ -34,8 +34,8 @@ public class Client : MonoBehaviour
     public void Shutdown() {
         if (isActive) {
             UnregisterToEvent();
-            isActive = false;
             driver.Dispose();
+            isActive = false;
             connection = default(NetworkConnection);
         }
     }
@@ -70,8 +70,8 @@ public class Client : MonoBehaviour
         
         while ((cmd = connection.PopEvent(driver, out stream)) != NetworkEvent.Type.Empty ) {
             if (cmd == NetworkEvent.Type.Connect) {
-                Debug.Log("Connected to server");
-                //SendToServer(new NetWelcom());
+                SendToServer(new NetWelcome());
+                Debug.Log("Connected to server!");
             } else if (cmd == NetworkEvent.Type.Data) {
                 NetUtility.OnData(stream, default(NetworkConnection));
                 
@@ -87,10 +87,6 @@ public class Client : MonoBehaviour
 
 
     public void SendToServer(NetMessage message){
-        if (!isActive) {
-            return;
-        }
-
         DataStreamWriter writer;
         driver.BeginSend(connection, out writer);
         message.Serialize(ref writer);

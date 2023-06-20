@@ -4,24 +4,15 @@ using UnityEngine;
 using Unity.Networking.Transport;
 
 
-public enum OpCode {
-    KEEP_ALIVE = 1,
-    WELCOME = 2,
-    START_GAME = 3,
-    MAKE_MOVE = 4,
-    REMATHC = 5,
-}
-
-public class NetMessage : MonoBehaviour
-{
+public class NetMessage {
     public OpCode Code { set; get;}
 
     public virtual void Serialize(ref DataStreamWriter writer) {
-        writer.WriteInt((int)Code);
+        writer.WriteByte((byte)Code);
     }
 
     public virtual void Deserialize(ref DataStreamReader reader) {
-        Code = (OpCode)reader.ReadInt();
+        Code = (OpCode)reader.ReadByte();
     }
 
     public virtual void ReceivedOnClient() {

@@ -849,7 +849,8 @@ PlayerSettings:
   XboxOneOverrideIdentityName: 
   XboxOneOverrideIdentityPublisher: 
   vrEditorSettings: {}
-  cloudServicesEnabled: {}
+  cloudServicesEnabled:
+    Build: 1
   luminIcon:
     m_Name: 
     m_ModelFolderPath: 
@@ -863,11 +864,11 @@ PlayerSettings:
     m_VersionName: 
   apiCompatibilityLevel: 6
   activeInputHandler: 0
-  cloudProjectId: b2cd5cf9-bc63-419d-84f4-c6a1d3cf85b9
+  cloudProjectId: 03ce194b-7be9-48a2-85f3-ba4368ecbe55
   framebufferDepthMemorylessMode: 0
   qualitySettingsNames: []
-  projectName: 
-  organizationId: 
+  projectName: Chess
+  organizationId: sibid
   cloudEnabled: 0
   legacyClampBlendShapeWeights: 0
   playerDataPath: 
