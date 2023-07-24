@@ -315,6 +315,7 @@ public class Chessboard : MonoBehaviour {
             brm.wantRematch = 1;
             Client.Instance.SendToServer(brm);
         } else {
+            rematchIndicator.transform.GetChild(2).gameObject.SetActive(true);
             NetRematch rm = new NetRematch();
             rm.teamId = currentTeam;
             rm.wantRematch = 1;
@@ -328,6 +329,7 @@ public class Chessboard : MonoBehaviour {
         RematchButton.interactable = true;
         rematchIndicator.transform.GetChild(0).gameObject.SetActive(false);
         rematchIndicator.transform.GetChild(1).gameObject.SetActive(false);
+        rematchIndicator.transform.GetChild(2).gameObject.SetActive(false);
         
 
         victoryScreen.transform.GetChild(0).gameObject.SetActive(false);
@@ -364,7 +366,6 @@ public class Chessboard : MonoBehaviour {
         SpawnAllPieces();
         PositioningAllPieces();
         isWhiteTurn = true;
-        currentTeam = 0;
     }
 
     public void OnMenuButton() {
@@ -372,6 +373,14 @@ public class Chessboard : MonoBehaviour {
         rm.teamId = currentTeam;
         rm.wantRematch = 0;
         Client.Instance.SendToServer(rm);
+
+        rematchIndicator.transform.GetChild(0).gameObject.SetActive(false);
+        rematchIndicator.transform.GetChild(1).gameObject.SetActive(false);
+        rematchIndicator.transform.GetChild(2).gameObject.SetActive(false);
+        
+        RematchButton.interactable = true;
+        ThemeButton.SetActive(false);
+
 
         GameReset();
         GameUI.Instance.OnLeaveFromGameMenu();
@@ -763,6 +772,10 @@ public class Chessboard : MonoBehaviour {
         if (CheckForDraw()) {
             DisplayVictory(2);
         }
+        if (localGame) {
+            Debug.Log("got here OnMakeMoverClient client if local");
+            GameUI.Instance.changeCamera((currentTeam == 0) ? GameCameraAngle.whiteTeam : GameCameraAngle.blackTeam);
+        }
         return;        
     }
 
@@ -850,6 +863,7 @@ public class Chessboard : MonoBehaviour {
         Debug.Log($"MM : {mm.teamId} : {mm.originalX}, {mm.originalY} -> {mm.destinationX}, {mm.destinationY}");
 
         if (mm.teamId != currentTeam) {
+            Debug.Log("got here OnMakeMoverClient client if");
             //Move the piece
 
             ChessPiece target = chessPieces[mm.originalX, mm.originalY];
@@ -916,7 +930,6 @@ public class Chessboard : MonoBehaviour {
         playerCount = -1;
         currentTeam = -1;
         localGame = local;
-        GameUI.Instance.changeCamera(GameCameraAngle.whiteTeam);
         ThemeButton.SetActive(true);
     }
     #endregion
