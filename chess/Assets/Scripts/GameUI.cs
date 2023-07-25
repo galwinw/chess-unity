@@ -20,6 +20,7 @@ public class GameUI : MonoBehaviour {
     [SerializeField] private TMP_InputField addressInput;
     [SerializeField] private GameObject[] cameraAngles;
     [SerializeField] private GameObject ThemeButton;
+    //[SerializeField] private GameObject LeaveButton;
 
     public Action<bool> SetlocalGame;
 
@@ -70,6 +71,7 @@ public class GameUI : MonoBehaviour {
         server.Shutdown();
         client.Shutdown();
         ThemeButton.SetActive(false);
+        //LeaveButton.SetActive(false);
         menuAnimator.SetTrigger("OnlineMenu");
     }
 
@@ -77,6 +79,10 @@ public class GameUI : MonoBehaviour {
         changeCamera(GameCameraAngle.menu);
         menuAnimator.SetTrigger("StartMenu");
         
+    }
+
+    public void OnInGameLeaveBtn() {
+        Chessboard.Instance.OnMenuButton();
     }
 
     #region

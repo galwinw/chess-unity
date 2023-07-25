@@ -14,6 +14,8 @@ public enum SpecialMove {
     }
 
 public class Chessboard : MonoBehaviour {
+    public static Chessboard Instance {set; get;}
+
     [Header("Art Stuff")]
     [SerializeField] private Material tileMaterial;
     [SerializeField] private float tileSize = 1.0f;
@@ -29,6 +31,7 @@ public class Chessboard : MonoBehaviour {
 
 
     [SerializeField] private GameObject ThemeButton;
+    [SerializeField] private GameObject LeaveButton;
 
 
     [Header("Prefabs & Materials")]
@@ -62,8 +65,8 @@ public class Chessboard : MonoBehaviour {
     public bool[] playerRematch = new bool[2];
 
 
-    private void Start() { // Awake is called before Start
-
+    private void Start() { // Start is called before the first frame update
+        Instance = this;
         isWhiteTurn = true;
         
         GenerateAllTiles(tileSize, TILE_COUNT_X, TILE_COUNT_Y);
@@ -314,6 +317,8 @@ public class Chessboard : MonoBehaviour {
             brm.teamId = 1;
             brm.wantRematch = 1;
             Client.Instance.SendToServer(brm);
+            GameUI.Instance.changeCamera(GameCameraAngle.whiteTeam);
+            currentTeam = 0;
         } else {
             rematchIndicator.transform.GetChild(2).gameObject.SetActive(true);
             NetRematch rm = new NetRematch();
@@ -380,6 +385,7 @@ public class Chessboard : MonoBehaviour {
         
         RematchButton.interactable = true;
         ThemeButton.SetActive(false);
+        LeaveButton.SetActive(false);
 
 
         GameReset();
@@ -392,6 +398,8 @@ public class Chessboard : MonoBehaviour {
         currentTeam = -1;
 
     }
+
+
 
     // Special Moves
     private void ProcessSpecialMove() {
@@ -780,6 +788,7 @@ public class Chessboard : MonoBehaviour {
     }
 
 
+
     #region
     private void RegisterEvents() {
         NetUtility.S_WELCOME += OnWelcomeServer;
@@ -931,6 +940,9 @@ public class Chessboard : MonoBehaviour {
         currentTeam = -1;
         localGame = local;
         ThemeButton.SetActive(true);
+        if (local) {
+            LeaveButton.SetActive(true);
+        }
     }
     #endregion
 
