@@ -30,8 +30,15 @@ public class Chessboard : MonoBehaviour {
     [SerializeField] private Button RematchButton;
 
 
+
+
     [SerializeField] private GameObject ThemeButton;
     [SerializeField] private GameObject LeaveButton;
+    [SerializeField] private GameObject WaterButton;
+
+    [SerializeField] private GameObject Water;
+
+    [SerializeField] private GameObject LookCamera;
 
 
     [Header("Prefabs & Materials")]
@@ -62,6 +69,8 @@ public class Chessboard : MonoBehaviour {
 
     private bool localGame = true;
 
+    private bool gameStarted = false;
+
     public bool[] playerRematch = new bool[2];
 
 
@@ -80,6 +89,17 @@ public class Chessboard : MonoBehaviour {
         if (!currentCamera) {
             currentCamera = Camera.main;
             return;
+        }
+
+        if (gameStarted && Input.GetMouseButtonDown(1)) {
+            LookCamera.gameObject.SetActive(true);
+        }
+        // if game is started and we dont click on the bottom right corner of the sreen and we click the right mouse button
+        if (gameStarted && !RectTransformUtility.RectangleContainsScreenPoint(ThemeButton.GetComponent<RectTransform>(), Input.mousePosition) && Input.GetMouseButtonDown(0)) {
+            if (!RectTransformUtility.RectangleContainsScreenPoint(WaterButton.GetComponent<RectTransform>(), Input.mousePosition)) {
+                LookCamera.gameObject.SetActive(false);
+                GameUI.Instance.changeCamera((currentTeam == 0) ? GameCameraAngle.whiteTeam : GameCameraAngle.blackTeam);
+            }
         }
         RaycastHit info; 
         Ray ray = currentCamera.ScreenPointToRay(Input.mousePosition); // Cast a ray from the camera to the mouse position
@@ -386,6 +406,7 @@ public class Chessboard : MonoBehaviour {
         RematchButton.interactable = true;
         ThemeButton.SetActive(false);
         LeaveButton.SetActive(false);
+        WaterButton.SetActive(false);
 
 
         GameReset();
@@ -396,9 +417,13 @@ public class Chessboard : MonoBehaviour {
         // Reset some values
         playerCount = -1;
         currentTeam = -1;
+        gameStarted = false;
 
     }
 
+    public void OnWaterButton() {
+        Water.SetActive(!Water.activeSelf);
+    }
 
 
     // Special Moves
@@ -905,6 +930,7 @@ public class Chessboard : MonoBehaviour {
     private void OnStartGameClient(NetMessage msg) {
         //We just need to change the camera
         Debug.Log("Starting the game client");
+        gameStarted = true;
         GameUI.Instance.changeCamera((currentTeam == 0) ? GameCameraAngle.whiteTeam : GameCameraAngle.blackTeam);
     }
 
@@ -940,6 +966,7 @@ public class Chessboard : MonoBehaviour {
         currentTeam = -1;
         localGame = local;
         ThemeButton.SetActive(true);
+        WaterButton.SetActive(true);
         if (local) {
             LeaveButton.SetActive(true);
         }

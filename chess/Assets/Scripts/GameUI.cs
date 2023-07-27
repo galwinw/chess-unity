@@ -21,6 +21,7 @@ public class GameUI : MonoBehaviour {
     [SerializeField] private GameObject[] cameraAngles;
     [SerializeField] private GameObject ThemeButton;
     //[SerializeField] private GameObject LeaveButton;
+    [SerializeField] private GameObject WaterButton;
 
     public Action<bool> SetlocalGame;
 
@@ -71,6 +72,7 @@ public class GameUI : MonoBehaviour {
         server.Shutdown();
         client.Shutdown();
         ThemeButton.SetActive(false);
+        WaterButton.SetActive(false);
         //LeaveButton.SetActive(false);
         menuAnimator.SetTrigger("OnlineMenu");
     }
