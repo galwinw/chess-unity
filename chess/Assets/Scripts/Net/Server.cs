@@ -118,7 +118,7 @@ public class Server : MonoBehaviour {
         driver.EndSend(writer);
     }
 
-    public void Broadcast(NetMessage msg) {
+    public void Broadcast(NetMessage msg) { //Broadcast to all clients
         Debug.Log("got to server broadcasting");
         for (int i = 0; i < connections.Length; i++) {
             if (connections[i].IsCreated) {

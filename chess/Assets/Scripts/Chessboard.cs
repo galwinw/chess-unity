@@ -91,6 +91,10 @@ public class Chessboard : MonoBehaviour {
             return;
         }
 
+        if (GameUI.Instance.cameraAngles[0].activeSelf) {
+            victoryScreen.SetActive(false);
+        }
+
         if (gameStarted && Input.GetMouseButtonDown(1)) {
             LookCamera.gameObject.SetActive(true);
         }
@@ -323,6 +327,11 @@ public class Chessboard : MonoBehaviour {
 
     private void DisplayVictory(int winningteam) {
         victoryScreen.SetActive(true);
+        rematchIndicator.GetChild(0).gameObject.SetActive(false);
+        rematchIndicator.GetChild(1).gameObject.SetActive(false);
+        rematchIndicator.GetChild(2).gameObject.SetActive(false);
+        
+        RematchButton.interactable = true;
         victoryScreen.transform.GetChild(winningteam).gameObject.SetActive(true);
     }
 
@@ -403,6 +412,7 @@ public class Chessboard : MonoBehaviour {
         rematchIndicator.transform.GetChild(1).gameObject.SetActive(false);
         rematchIndicator.transform.GetChild(2).gameObject.SetActive(false);
         
+
         RematchButton.interactable = true;
         ThemeButton.SetActive(false);
         LeaveButton.SetActive(false);
@@ -806,7 +816,6 @@ public class Chessboard : MonoBehaviour {
             DisplayVictory(2);
         }
         if (localGame) {
-            Debug.Log("got here OnMakeMoverClient client if local");
             GameUI.Instance.changeCamera((currentTeam == 0) ? GameCameraAngle.whiteTeam : GameCameraAngle.blackTeam);
         }
         return;        
@@ -855,7 +864,6 @@ public class Chessboard : MonoBehaviour {
 
     //Server 
     private void OnWelcomeServer(NetMessage msg, NetworkConnection cnn) {
-        Debug.Log("got here OnWelcomeServer");
         // Client has connected, assign team and return a message
         NetWelcome nw = msg as NetWelcome;
 
@@ -864,8 +872,6 @@ public class Chessboard : MonoBehaviour {
 
         //Return back to the client
         Server.Instance.SendToClient(cnn, nw);
-
-        Debug.Log("After Sending to Client");
 
         //If full start the game
         if (playerCount == 1) {
@@ -877,7 +883,6 @@ public class Chessboard : MonoBehaviour {
     }
 
     private void OnMakeMoveServer(NetMessage msg, NetworkConnection cnn) {
-        Debug.Log("got here OnMakeMoveServer server");
         // Recieve and broadcast it back
         NetMakeMove mm = msg as NetMakeMove;
 
@@ -885,19 +890,16 @@ public class Chessboard : MonoBehaviour {
     }
 
     private void OnRematchServer(NetMessage msg, NetworkConnection cnn) {
-        Debug.Log("got here OnRematchServer server");
         Server.Instance.Broadcast(msg);
     }
 
     private void OnMakeMoveClient(NetMessage msg) {
-        Debug.Log("got here OnMakeMoverClient client");
 
         NetMakeMove mm = msg as NetMakeMove;
 
         Debug.Log($"MM : {mm.teamId} : {mm.originalX}, {mm.originalY} -> {mm.destinationX}, {mm.destinationY}");
 
         if (mm.teamId != currentTeam) {
-            Debug.Log("got here OnMakeMoverClient client if");
             //Move the piece
 
             ChessPiece target = chessPieces[mm.originalX, mm.originalY];
@@ -912,7 +914,6 @@ public class Chessboard : MonoBehaviour {
 
     //Client
     private void OnWelcomeClient(NetMessage msg) {
-        Debug.Log("got here OnWelcomeClient");
         NetWelcome nw = msg as NetWelcome;
 
         //Assign team
@@ -929,13 +930,11 @@ public class Chessboard : MonoBehaviour {
     
     private void OnStartGameClient(NetMessage msg) {
         //We just need to change the camera
-        Debug.Log("Starting the game client");
         gameStarted = true;
         GameUI.Instance.changeCamera((currentTeam == 0) ? GameCameraAngle.whiteTeam : GameCameraAngle.blackTeam);
     }
 
     private void OnRematchClient(NetMessage msg) {
-        Debug.Log("got here OnRematchClient");
         NetRematch rm = msg as NetRematch;
 
         playerRematch[rm.teamId] = rm.wantRematch == 1;
@@ -945,6 +944,8 @@ public class Chessboard : MonoBehaviour {
             rematchIndicator.transform.GetChild((rm.wantRematch == 1) ? 0 : 1).gameObject.SetActive(true);
             if (rm.wantRematch  != 1) {
                 RematchButton.interactable = false;
+                rematchIndicator.transform.GetChild(2).gameObject.SetActive(false);
+                victoryScreen.SetActive(true);
             }
         }
 
@@ -952,12 +953,18 @@ public class Chessboard : MonoBehaviour {
         if (playerRematch[0] && playerRematch[1]) {
             GameReset();
         }
+
+
     }
 
     private void ShutdownRelay() {
         Client.Instance.Shutdown();
         Server.Instance.Shutdown();
 
+    }
+
+    public bool isLocalGame() {
+        return localGame;
     }
 
     //Local Game
@@ -967,10 +974,9 @@ public class Chessboard : MonoBehaviour {
         localGame = local;
         ThemeButton.SetActive(true);
         WaterButton.SetActive(true);
-        if (local) {
-            LeaveButton.SetActive(true);
-        }
     }
     #endregion
+
+    
 
 }

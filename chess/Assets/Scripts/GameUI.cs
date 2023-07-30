@@ -1,6 +1,7 @@
 using UnityEngine;
 using TMPro;
 using System;
+using UnityEngine.UI;
 
 
 public enum GameCameraAngle {
@@ -18,10 +19,13 @@ public class GameUI : MonoBehaviour {
 
     [SerializeField] private Animator menuAnimator;
     [SerializeField] private TMP_InputField addressInput;
-    [SerializeField] private GameObject[] cameraAngles;
+    [SerializeField] public GameObject[] cameraAngles;
     [SerializeField] private GameObject ThemeButton;
-    //[SerializeField] private GameObject LeaveButton;
     [SerializeField] private GameObject WaterButton;
+    [SerializeField] private GameObject LeaveButton;
+
+
+
 
     public Action<bool> SetlocalGame;
 
@@ -61,7 +65,7 @@ public class GameUI : MonoBehaviour {
     public void OnOnlineConnectButton() {
         SetlocalGame?.Invoke(false);
         client.Init(addressInput.text, 8007);
-        Debug.Log("Connect Button Pressed");
+        menuAnimator.SetTrigger("HostMenu");
     }
 
     public void OnOnlineBackButton() {
@@ -73,14 +77,13 @@ public class GameUI : MonoBehaviour {
         client.Shutdown();
         ThemeButton.SetActive(false);
         WaterButton.SetActive(false);
-        //LeaveButton.SetActive(false);
         menuAnimator.SetTrigger("OnlineMenu");
     }
 
     public void OnLeaveFromGameMenu() {
         changeCamera(GameCameraAngle.menu);
         menuAnimator.SetTrigger("StartMenu");
-        
+
     }
 
     public void OnInGameLeaveBtn() {
@@ -97,6 +100,7 @@ public class GameUI : MonoBehaviour {
 
     private void OnStartGameClient(NetMessage msg) {
         menuAnimator.SetTrigger("InGameMenu");
+        LeaveButton.SetActive(true);
     }
 
     private void OnDestroy() {
