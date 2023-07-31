@@ -83,6 +83,8 @@ public class Chessboard : MonoBehaviour {
         PositioningAllPieces();
 
         RegisterEvents();
+
+        
     }
 
     private void Update() { // Update is called once per frame

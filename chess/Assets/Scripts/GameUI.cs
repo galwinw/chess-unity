@@ -25,13 +25,12 @@ public class GameUI : MonoBehaviour {
     [SerializeField] private GameObject LeaveButton;
 
 
-
-
     public Action<bool> SetlocalGame;
 
     private void Awake() {
         Instance = this;
-
+        server.Init(8007);
+        //client.Init("3.15.222.39", 8007);
         RegisterEvents();
     }
 
@@ -47,7 +46,7 @@ public class GameUI : MonoBehaviour {
     public void OnLocalGameButton() {
         menuAnimator.SetTrigger("InGameMenu");
         SetlocalGame?.Invoke(true);
-        server.Init(8007);
+        //server.Init(8008);
         client.Init("127.0.0.1", 8007);
     }
 
@@ -57,14 +56,15 @@ public class GameUI : MonoBehaviour {
 
     public void OnOnlineHostButton() {
         SetlocalGame?.Invoke(false);
-        server.Init(8007);
-        client.Init("127.0.0.1", 8007);
+        //server.Init(8008);
+        client.Init("3.15.222.39", 8007);
+        //client.Init("127.0.0.1", 8007);
         menuAnimator.SetTrigger("HostMenu");
     }
 
     public void OnOnlineConnectButton() {
         SetlocalGame?.Invoke(false);
-        client.Init(addressInput.text, 8007);
+        client.Init(addressInput.text, 8008);
         menuAnimator.SetTrigger("HostMenu");
     }
 

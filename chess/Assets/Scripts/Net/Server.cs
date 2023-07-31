@@ -4,6 +4,7 @@ using Unity.Collections;
 using System;
 
 
+
 public class Server : MonoBehaviour {
     #region Singleton implementation
     public static Server Instance {set; get;}
@@ -86,7 +87,7 @@ public class Server : MonoBehaviour {
         NetworkConnection c;
         while ((c = driver.Accept()) != default(NetworkConnection)) {
             connections.Add(c);
-            Debug.Log("Accepted a connection");
+            Debug.Log("Accepted a connection on " + c.InternalId.ToString());
         }
     }
 
@@ -97,6 +98,7 @@ public class Server : MonoBehaviour {
             
             while ((cmd = driver.PopEventForConnection(connections[i], out stream)) != NetworkEvent.Type.Empty) {
                 if (cmd == NetworkEvent.Type.Data) {
+                    Debug.Log("Got a message from client");
                     NetUtility.OnData(stream, connections[i], this);
 
                 } else if (cmd == NetworkEvent.Type.Disconnect) {

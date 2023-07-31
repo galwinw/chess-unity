@@ -71,8 +71,9 @@ public class Client : MonoBehaviour
         while ((cmd = connection.PopEvent(driver, out stream)) != NetworkEvent.Type.Empty ) {
             if (cmd == NetworkEvent.Type.Connect) {
                 SendToServer(new NetWelcome());
-                Debug.Log("Connected to server!");
+                Debug.Log("Connected to server onnn " + connection.InternalId.ToString() + "");
             } else if (cmd == NetworkEvent.Type.Data) {
+                Debug.Log("Got a message from server");
                 NetUtility.OnData(stream, default(NetworkConnection));
                 
             } else if (cmd == NetworkEvent.Type.Disconnect) {
