@@ -877,6 +877,7 @@ public class Chessboard : MonoBehaviour {
 
         //If full start the game
         if (playerCount == 1) {
+            playerCount = -1;
             //Start the game
             Debug.Log("Starting the game");
             Server.Instance.Broadcast(new NetStartGame());
@@ -961,7 +962,9 @@ public class Chessboard : MonoBehaviour {
 
     private void ShutdownRelay() {
         Client.Instance.Shutdown();
-        Server.Instance.Shutdown();
+        // if (localGame) {
+        //     Server.Instance.Shutdown();
+        // }
 
     }
 

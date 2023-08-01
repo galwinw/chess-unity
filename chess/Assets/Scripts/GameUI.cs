@@ -57,7 +57,7 @@ public class GameUI : MonoBehaviour {
     public void OnOnlineHostButton() {
         SetlocalGame?.Invoke(false);
         //server.Init(8008);
-        client.Init("3.15.222.39", 8007);
+        client.Init("18.219.116.17", 8007);
         //client.Init("127.0.0.1", 8007);
         menuAnimator.SetTrigger("HostMenu");
     }
@@ -73,7 +73,7 @@ public class GameUI : MonoBehaviour {
     }
 
     public void OnHostBackButton() {
-        server.Shutdown();
+        //server.Shutdown();
         client.Shutdown();
         ThemeButton.SetActive(false);
         WaterButton.SetActive(false);

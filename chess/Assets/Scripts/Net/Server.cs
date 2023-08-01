@@ -71,12 +71,14 @@ public class Server : MonoBehaviour {
         if (Time.time - lastKeepAliveTime > keepAliveTickRate) {
             lastKeepAliveTime = Time.time;
             Broadcast(new NetKeepAlive());
+            Debug.Log(connections.Length);
         }
     }
 
     private void CleanupConnections() {
         for (int i = 0; i < connections.Length; i++) {
             if (!connections[i].IsCreated) {
+                Debug.Log(connections[i].InternalId.ToString() + " disconnected");
                 connections.RemoveAtSwapBack(i);
                 --i;
             }
@@ -105,7 +107,7 @@ public class Server : MonoBehaviour {
                     Debug.Log("Client disconnected from server");
                     connections[i] = default(NetworkConnection);
                     connectionDropped?.Invoke();
-                    Shutdown();//Since chess is a two player game we can shutdown when one leaves the server
+                    //Shutdown();//Since chess is a two player game we can shutdown when one leaves the server
                 }
             }
 
