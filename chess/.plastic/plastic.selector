@@ -1,4 +1,4 @@
 repository "chess@Galsib@cloud"
   path "/"
-    br "/main"
-    co "/main"
+    smartbranch "/main" changeset "54"                   
+     
