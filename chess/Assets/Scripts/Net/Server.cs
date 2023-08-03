@@ -100,11 +100,11 @@ public class Server : MonoBehaviour {
             
             while ((cmd = driver.PopEventForConnection(connections[i], out stream)) != NetworkEvent.Type.Empty) {
                 if (cmd == NetworkEvent.Type.Data) {
-                    Debug.Log("Got a message from client");
                     NetUtility.OnData(stream, connections[i], this);
 
                 } else if (cmd == NetworkEvent.Type.Disconnect) {
                     Debug.Log("Client disconnected from server");
+                    Chessboard.Instance.OnDisconnect();
                     connections[i] = default(NetworkConnection);
                     connectionDropped?.Invoke();
                     //Shutdown();//Since chess is a two player game we can shutdown when one leaves the server
@@ -123,10 +123,9 @@ public class Server : MonoBehaviour {
     }
 
     public void Broadcast(NetMessage msg) { //Broadcast to all clients
-        Debug.Log("got to server broadcasting");
         for (int i = 0; i < connections.Length; i++) {
             if (connections[i].IsCreated) {
-                Debug.Log($"Sendingg {msg.Code} to {connections[i].InternalId}");
+                Debug.Log($"Sending {msg.Code} to {connections[i].InternalId}");
                 SendToClient(connections[i], msg);
             }
             

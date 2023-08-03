@@ -24,13 +24,15 @@ public class GameUI : MonoBehaviour {
     [SerializeField] private GameObject WaterButton;
     [SerializeField] private GameObject LeaveButton;
 
+    [SerializeField] private TextMeshProUGUI GameAvailableText;
+
 
     public Action<bool> SetlocalGame;
 
     private void Awake() {
         Instance = this;
         server.Init(8007);
-        //client.Init("3.15.222.39", 8007);
+        client.Init("3.142.239.121", 8007);
         RegisterEvents();
     }
 
@@ -46,8 +48,7 @@ public class GameUI : MonoBehaviour {
     public void OnLocalGameButton() {
         menuAnimator.SetTrigger("InGameMenu");
         SetlocalGame?.Invoke(true);
-        //server.Init(8008);
-        client.Init("127.0.0.1", 8007);
+
     }
 
     public void OnOnlineGameButton() {
@@ -55,17 +56,22 @@ public class GameUI : MonoBehaviour {
     }
 
     public void OnOnlineHostButton() {
-        SetlocalGame?.Invoke(false);
-        //server.Init(8008);
-        client.Init("18.219.116.17", 8007);
-        //client.Init("127.0.0.1", 8007);
-        menuAnimator.SetTrigger("HostMenu");
+        if (GameAvailableText.text == "No Matches Found") {
+            SetlocalGame?.Invoke(false);
+            menuAnimator.SetTrigger("HostMenu");
+            NetPlayer msg = new NetPlayer();
+            msg.matchName = addressInput.text;
+            client.SendToServer(msg);
+            client.SendToServer(new NetWelcome());
+        }
     }
 
     public void OnOnlineConnectButton() {
-        SetlocalGame?.Invoke(false);
-        client.Init(addressInput.text, 8008);
-        menuAnimator.SetTrigger("HostMenu");
+        if (GameAvailableText.text != "No Matches Found") {
+            SetlocalGame?.Invoke(false);
+            menuAnimator.SetTrigger("HostMenu");
+            client.SendToServer(new NetWelcome());
+        }
     }
 
     public void OnOnlineBackButton() {
@@ -73,11 +79,12 @@ public class GameUI : MonoBehaviour {
     }
 
     public void OnHostBackButton() {
-        //server.Shutdown();
-        client.Shutdown();
         ThemeButton.SetActive(false);
         WaterButton.SetActive(false);
         menuAnimator.SetTrigger("OnlineMenu");
+        NetPlayer msg = new NetPlayer();
+        msg.matchName = "playercounterminus";
+        client.SendToServer(msg);
     }
 
     public void OnLeaveFromGameMenu() {
