@@ -32,7 +32,7 @@ public class GameUI : MonoBehaviour {
     private void Awake() {
         Instance = this;
         server.Init(8007);
-        client.Init("3.142.239.121", 8007);
+        client.Init("3.16.188.40", 8007);
         RegisterEvents();
     }
 
